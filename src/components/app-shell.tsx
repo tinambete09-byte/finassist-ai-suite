@@ -30,7 +30,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-provider";
 import { toast } from "sonner";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/app/email", label: "Email Assistant", icon: Mail },
   { to: "/app/summariser", label: "Summariser", icon: FileText },
@@ -38,7 +39,7 @@ const NAV = [
   { to: "/app/reports", label: "Client Reports", icon: ClipboardList },
   { to: "/app/knowledge", label: "Knowledge", icon: MessageSquare },
   { to: "/app/templates", label: "Templates", icon: Library },
-] as const;
+];
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const [open, setOpen] = useState(false);
