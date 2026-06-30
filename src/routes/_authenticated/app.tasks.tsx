@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { listTasks, upsertTask, deleteTask } from "@/lib/data.functions";
+import { listTasks, upsertTask, deleteTask, updateTaskStatus } from "@/lib/data.functions";
 import { aiSuggestTasks } from "@/lib/ai.functions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -59,7 +59,7 @@ function TasksPage() {
 
   const setStatus = useMutation({
     mutationFn: (vars: { id: string; status: Task["status"] }) =>
-      upsertTask({ data: { id: vars.id, status: vars.status, title: " ", priority: "medium" as const } as never }),
+      updateTaskStatus({ data: { id: vars.id, status: vars.status } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["tasks"] }),
   });
 
