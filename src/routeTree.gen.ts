@@ -16,8 +16,12 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-passw
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authenticated/app.templates'
 import { Route as AuthenticatedAppTasksRouteImport } from './routes/_authenticated/app.tasks'
 import { Route as AuthenticatedAppSummariserRouteImport } from './routes/_authenticated/app.summariser'
+import { Route as AuthenticatedAppReportsRouteImport } from './routes/_authenticated/app.reports'
+import { Route as AuthenticatedAppProfileRouteImport } from './routes/_authenticated/app.profile'
+import { Route as AuthenticatedAppKnowledgeRouteImport } from './routes/_authenticated/app.knowledge'
 import { Route as AuthenticatedAppEmailRouteImport } from './routes/_authenticated/app.email'
 
 const AuthRoute = AuthRouteImport.update({
@@ -54,6 +58,12 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppTemplatesRoute =
+  AuthenticatedAppTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppTasksRoute = AuthenticatedAppTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -63,6 +73,22 @@ const AuthenticatedAppSummariserRoute =
   AuthenticatedAppSummariserRouteImport.update({
     id: '/summariser',
     path: '/summariser',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppReportsRoute = AuthenticatedAppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppProfileRoute = AuthenticatedAppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppKnowledgeRoute =
+  AuthenticatedAppKnowledgeRouteImport.update({
+    id: '/knowledge',
+    path: '/knowledge',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppEmailRoute = AuthenticatedAppEmailRouteImport.update({
@@ -78,8 +104,12 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/app/email': typeof AuthenticatedAppEmailRoute
+  '/app/knowledge': typeof AuthenticatedAppKnowledgeRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/summariser': typeof AuthenticatedAppSummariserRoute
   '/app/tasks': typeof AuthenticatedAppTasksRoute
+  '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -88,8 +118,12 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/app/email': typeof AuthenticatedAppEmailRoute
+  '/app/knowledge': typeof AuthenticatedAppKnowledgeRoute
+  '/app/profile': typeof AuthenticatedAppProfileRoute
+  '/app/reports': typeof AuthenticatedAppReportsRoute
   '/app/summariser': typeof AuthenticatedAppSummariserRoute
   '/app/tasks': typeof AuthenticatedAppTasksRoute
+  '/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/app': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesById {
@@ -101,8 +135,12 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/app/email': typeof AuthenticatedAppEmailRoute
+  '/_authenticated/app/knowledge': typeof AuthenticatedAppKnowledgeRoute
+  '/_authenticated/app/profile': typeof AuthenticatedAppProfileRoute
+  '/_authenticated/app/reports': typeof AuthenticatedAppReportsRoute
   '/_authenticated/app/summariser': typeof AuthenticatedAppSummariserRoute
   '/_authenticated/app/tasks': typeof AuthenticatedAppTasksRoute
+  '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRouteTypes {
@@ -114,8 +152,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/auth/reset-password'
     | '/app/email'
+    | '/app/knowledge'
+    | '/app/profile'
+    | '/app/reports'
     | '/app/summariser'
     | '/app/tasks'
+    | '/app/templates'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -124,8 +166,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/auth/reset-password'
     | '/app/email'
+    | '/app/knowledge'
+    | '/app/profile'
+    | '/app/reports'
     | '/app/summariser'
     | '/app/tasks'
+    | '/app/templates'
     | '/app'
   id:
     | '__root__'
@@ -136,8 +182,12 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/auth/reset-password'
     | '/_authenticated/app/email'
+    | '/_authenticated/app/knowledge'
+    | '/_authenticated/app/profile'
+    | '/_authenticated/app/reports'
     | '/_authenticated/app/summariser'
     | '/_authenticated/app/tasks'
+    | '/_authenticated/app/templates'
     | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
 }
@@ -199,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/templates': {
+      id: '/_authenticated/app/templates'
+      path: '/templates'
+      fullPath: '/app/templates'
+      preLoaderRoute: typeof AuthenticatedAppTemplatesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/tasks': {
       id: '/_authenticated/app/tasks'
       path: '/tasks'
@@ -213,6 +270,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSummariserRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/reports': {
+      id: '/_authenticated/app/reports'
+      path: '/reports'
+      fullPath: '/app/reports'
+      preLoaderRoute: typeof AuthenticatedAppReportsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/profile': {
+      id: '/_authenticated/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AuthenticatedAppProfileRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/knowledge': {
+      id: '/_authenticated/app/knowledge'
+      path: '/knowledge'
+      fullPath: '/app/knowledge'
+      preLoaderRoute: typeof AuthenticatedAppKnowledgeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/email': {
       id: '/_authenticated/app/email'
       path: '/email'
@@ -225,15 +303,23 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppEmailRoute: typeof AuthenticatedAppEmailRoute
+  AuthenticatedAppKnowledgeRoute: typeof AuthenticatedAppKnowledgeRoute
+  AuthenticatedAppProfileRoute: typeof AuthenticatedAppProfileRoute
+  AuthenticatedAppReportsRoute: typeof AuthenticatedAppReportsRoute
   AuthenticatedAppSummariserRoute: typeof AuthenticatedAppSummariserRoute
   AuthenticatedAppTasksRoute: typeof AuthenticatedAppTasksRoute
+  AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppEmailRoute: AuthenticatedAppEmailRoute,
+  AuthenticatedAppKnowledgeRoute: AuthenticatedAppKnowledgeRoute,
+  AuthenticatedAppProfileRoute: AuthenticatedAppProfileRoute,
+  AuthenticatedAppReportsRoute: AuthenticatedAppReportsRoute,
   AuthenticatedAppSummariserRoute: AuthenticatedAppSummariserRoute,
   AuthenticatedAppTasksRoute: AuthenticatedAppTasksRoute,
+  AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }
 
