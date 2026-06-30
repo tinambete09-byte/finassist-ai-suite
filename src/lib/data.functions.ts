@@ -141,6 +141,21 @@ export const deleteTask = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const updateTaskStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), status: TaskStatus }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("tasks")
+      .update({ status: data.status })
+      .eq("id", data.id)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 /* ------------------------------ EMAIL DRAFTS ------------------------------ */
 export const listEmailDrafts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
