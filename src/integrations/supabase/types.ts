@@ -283,6 +283,50 @@ export type Database = {
         }
         Relationships: []
       }
+      template_versions: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          tags: string[]
+          template_id: string
+          title: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          kind: string
+          tags?: string[]
+          template_id: string
+          title: string
+          user_id: string
+          version: number
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          tags?: string[]
+          template_id?: string
+          title?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_versions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       templates: {
         Row: {
           body: string
