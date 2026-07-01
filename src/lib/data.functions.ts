@@ -131,7 +131,7 @@ export const restoreTemplateVersion = createServerFn({ method: "POST" })
     }
     const { data: row, error } = await supabase
       .from("templates")
-      .update({ kind: v.kind, title: v.title, body: v.body, tags: v.tags })
+      .update({ kind: v.kind as TemplateKind, title: v.title, body: v.body, tags: v.tags })
       .eq("id", data.templateId)
       .eq("user_id", userId)
       .select("*")
