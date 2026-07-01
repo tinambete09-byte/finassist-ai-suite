@@ -33,6 +33,30 @@ export const upsertTemplate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     if (data.id) {
+      const { data: existing } = await supabase
+        .from("templates")
+        .select("*")
+        .eq("id", data.id)
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (existing) {
+        const { data: last } = await supabase
+          .from("template_versions")
+          .select("version")
+          .eq("template_id", data.id)
+          .order("version", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        await supabase.from("template_versions").insert({
+          template_id: data.id,
+          user_id: userId,
+          version: (last?.version ?? 0) + 1,
+          kind: existing.kind,
+          title: existing.title,
+          body: existing.body,
+          tags: existing.tags ?? [],
+        });
+      }
       const { data: row, error } = await supabase
         .from("templates")
         .update({ kind: data.kind, title: data.title, body: data.body, tags: data.tags })
@@ -50,6 +74,83 @@ export const upsertTemplate = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
     return row;
+  });
+
+export const listTemplateVersions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ templateId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await context.supabase
+      .from("template_versions")
+      .select("*")
+      .eq("template_id", data.templateId)
+      .eq("user_id", context.userId)
+      .order("version", { ascending: false });
+    if (error) throw new Error(error.message);
+    return rows ?? [];
+  });
+
+export const restoreTemplateVersion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ templateId: z.string().uuid(), versionId: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: v, error: vErr } = await supabase
+      .from("template_versions")
+      .select("*")
+      .eq("id", data.versionId)
+      .eq("template_id", data.templateId)
+      .eq("user_id", userId)
+      .single();
+    if (vErr || !v) throw new Error(vErr?.message ?? "Version not found");
+    const { data: existing } = await supabase
+      .from("templates")
+      .select("*")
+      .eq("id", data.templateId)
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (existing) {
+      const { data: last } = await supabase
+        .from("template_versions")
+        .select("version")
+        .eq("template_id", data.templateId)
+        .order("version", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      await supabase.from("template_versions").insert({
+        template_id: data.templateId,
+        user_id: userId,
+        version: (last?.version ?? 0) + 1,
+        kind: existing.kind,
+        title: existing.title,
+        body: existing.body,
+        tags: existing.tags ?? [],
+      });
+    }
+    const { data: row, error } = await supabase
+      .from("templates")
+      .update({ kind: v.kind, title: v.title, body: v.body, tags: v.tags })
+      .eq("id", data.templateId)
+      .eq("user_id", userId)
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return row;
+  });
+
+export const deleteTemplateVersion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ versionId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("template_versions")
+      .delete()
+      .eq("id", data.versionId)
+      .eq("user_id", context.userId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 export const deleteTemplate = createServerFn({ method: "POST" })
